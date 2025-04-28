@@ -1,0 +1,120 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# RAGFlow架構概述
+
+RAGFlow是一個基於深度文檔理解的開源RAG(檢索增強生成)引擎。本文檔描述了RAGFlow的系統架構、主要組件和工作流程。
+
+## 系統架構
+
+RAGFlow採用微服務架構，主要包含以下服務：
+
+- **ragflow**: 主服務容器，運行RAGFlow的核心功能
+- **es01**: Elasticsearch服務，用於文本搜索和索引
+- **infinity**: Infinity數據庫服務，提供向量和圖數據存儲
+- **mysql**: MySQL數據庫，用於存儲系統配置和元數據
+- **minio**: MinIO對象存儲，用於存儲文檔和檔案
+- **redis**: Redis緩存服務
+
+### 架構圖
+
+```
++-------------+    +---------------+    +---------------+
+|             |    |               |    |               |
+|   Web UI    |--->|  RAGFlow API  |--->| Agent/Flow    |
+|             |    |               |    |               |
++-------------+    +---------------+    +---------------+
+                          |                    |
+                          v                    v
++-------------+    +---------------+    +---------------+
+|             |    |               |    |               |
+|   MySQL     |<---|  DeepDoc      |<---| RAG Core      |
+|             |    |               |    |               |
++-------------+    +---------------+    +---------------+
+                          |                    |
+                          v                    v
+                   +---------------+    +---------------+
+                   |               |    |               |
+                   | MinIO/Storage |    | ES/Infinity   |
+                   |               |    |               |
+                   +---------------+    +---------------+
+```
+
+## 主要組件
+
+### 1. [deepdoc/](mdc:deepdoc/) - 深度文檔處理
+
+用於從複雜格式的文檔中提取結構化和非結構化數據。支持功能：
+
+- OCR文本識別
+- 佈局分析
+- 表格結構識別(TSR)
+- 多種文檔格式解析(PDF, DOCX, EXCEL, PPT)
+
+### 2. [rag/](mdc:rag/) - RAG核心功能
+
+提供RAG(檢索增強生成)的核心實現：
+
+- 基於模板的分塊處理
+- 多種檢索方法
+- 融合重排序
+- 知識圖譜生成和應用
+
+### 3. [web/](mdc:web/) - 前端界面
+
+提供用戶友好的Web界面，支持：
+
+- 知識庫管理
+- 對話聊天
+- Agent設計和使用
+- 用戶管理
+
+### 4. [agent/](mdc:agent/) - 代理組件
+
+提供可編排的工作流組件：
+
+- 檢索
+- 生成
+- 搜索
+- 翻譯
+- 集成第三方服務
+
+### 5. [api/](mdc:api/) - API服務
+
+提供RESTful API，用於：
+
+- 文檔處理
+- 知識庫管理
+- 對話和聊天
+- Agent操作
+
+## 工作流程
+
+1. **文檔處理流程**：
+   - 文檔上傳 → DeepDoc處理 → 文本提取 → 分塊處理 → 嵌入生成 → 索引存儲
+
+2. **檢索流程**：
+   - 用戶查詢 → 查詢理解 → 向量檢索 → 重排序 → 結果過濾 → 返回上下文
+
+3. **生成流程**：
+   - 上下文 + 提示詞 → LLM生成 → 引用處理 → 返回答案
+
+4. **Agent工作流**：
+   - 定義流程 → 節點配置 → 節點關聯 → 流程執行 → 結果處理
+
+## 部署架構
+
+RAGFlow使用Docker容器進行部署，通過docker-compose配置多個服務組件：
+
+- [docker-compose.yml](mdc:docker/docker-compose.yml) - 主要的服務編排文件
+- [docker-compose-base.yml](mdc:docker/docker-compose-base.yml) - 基礎服務配置
+- [service_conf.yaml.template](mdc:docker/service_conf.yaml.template) - 服務配置模板
+
+## 配置選項
+
+系統通過以下文件進行配置：
+
+- [.env](mdc:docker/.env) - 環境變量配置，如服務端口、密碼等
+- [service_conf.yaml.template](mdc:docker/service_conf.yaml.template) - 後端服務配置，如LLM設置、數據庫連接等
