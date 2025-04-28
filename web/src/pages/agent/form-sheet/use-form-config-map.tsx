@@ -4,8 +4,6 @@ import { Operator } from '../constant';
 import AkShareForm from '../form/akshare-form';
 import AnswerForm from '../form/answer-form';
 import ArXivForm from '../form/arxiv-form';
-import BaiduFanyiForm from '../form/baidu-fanyi-form';
-import BaiduForm from '../form/baidu-form';
 import BeginForm from '../form/begin-form';
 import BingForm from '../form/bing-form';
 import CategorizeForm from '../form/categorize-form';
@@ -130,11 +128,6 @@ export function useFormConfigMap() {
         language: z.string(),
       }),
     },
-    [Operator.Baidu]: {
-      component: BaiduForm,
-      defaultValues: { top_n: 10 },
-      schema: z.object({ top_n: z.number() }),
-    },
     [Operator.DuckDuckGo]: {
       component: DuckDuckGoForm,
       defaultValues: {
@@ -198,11 +191,6 @@ export function useFormConfigMap() {
     },
     [Operator.GitHub]: {
       component: GithubForm,
-      defaultValues: {},
-      schema: z.object({}),
-    },
-    [Operator.BaiduFanyi]: {
-      component: BaiduFanyiForm,
       defaultValues: {},
       schema: z.object({}),
     },

@@ -6,8 +6,6 @@ import {
 } from '@/assets/icon/Icon';
 import { ReactComponent as AkShareIcon } from '@/assets/svg/akshare.svg';
 import { ReactComponent as ArXivIcon } from '@/assets/svg/arxiv.svg';
-import { ReactComponent as baiduFanyiIcon } from '@/assets/svg/baidu-fanyi.svg';
-import { ReactComponent as BaiduIcon } from '@/assets/svg/baidu.svg';
 import { ReactComponent as BeginIcon } from '@/assets/svg/begin.svg';
 import { ReactComponent as BingIcon } from '@/assets/svg/bing.svg';
 import { ReactComponent as ConcentratorIcon } from '@/assets/svg/concentrator.svg';
@@ -76,7 +74,6 @@ export enum Operator {
   Relevant = 'Relevant',
   RewriteQuestion = 'RewriteQuestion',
   KeywordExtract = 'KeywordExtract',
-  Baidu = 'Baidu',
   DuckDuckGo = 'DuckDuckGo',
   Wikipedia = 'Wikipedia',
   PubMed = 'PubMed',
@@ -86,7 +83,6 @@ export enum Operator {
   GoogleScholar = 'GoogleScholar',
   DeepL = 'DeepL',
   GitHub = 'GitHub',
-  BaiduFanyi = 'BaiduFanyi',
   QWeather = 'QWeather',
   ExeSQL = 'ExeSQL',
   Switch = 'Switch',
@@ -120,7 +116,6 @@ export const operatorIconMap = {
   [Operator.RewriteQuestion]: FormOutlined,
   [Operator.KeywordExtract]: KeywordIcon,
   [Operator.DuckDuckGo]: DuckIcon,
-  [Operator.Baidu]: BaiduIcon,
   [Operator.Wikipedia]: WikipediaIcon,
   [Operator.PubMed]: PubMedIcon,
   [Operator.ArXiv]: ArXivIcon,
@@ -129,7 +124,6 @@ export const operatorIconMap = {
   [Operator.GoogleScholar]: GoogleScholarIcon,
   [Operator.DeepL]: DeepLIcon,
   [Operator.GitHub]: GitHubIcon,
-  [Operator.BaiduFanyi]: baiduFanyiIcon,
   [Operator.QWeather]: QWeatherIcon,
   [Operator.ExeSQL]: ExeSqlIcon,
   [Operator.Switch]: SwitchIcon,
@@ -216,9 +210,6 @@ export const operatorMap: Record<
     backgroundColor: '#e7e389',
     color: '#aea00c',
   },
-  [Operator.Baidu]: {
-    backgroundColor: '#d9e0f8',
-  },
   [Operator.Wikipedia]: {
     backgroundColor: '#dee0e2',
   },
@@ -251,7 +242,6 @@ export const operatorMap: Record<
     backgroundColor: 'purple',
     color: 'purple',
   },
-  [Operator.BaiduFanyi]: { backgroundColor: '#e5f2d3' },
   [Operator.QWeather]: {
     backgroundColor: '#a4bbf3',
     color: '#a4bbf3',
@@ -328,9 +318,6 @@ export const componentMenuList = [
     name: Operator.DuckDuckGo,
   },
   {
-    name: Operator.Baidu,
-  },
-  {
     name: Operator.Wikipedia,
   },
   {
@@ -353,9 +340,6 @@ export const componentMenuList = [
   },
   {
     name: Operator.GitHub,
-  },
-  {
-    name: Operator.BaiduFanyi,
   },
   {
     name: Operator.QWeather,
@@ -463,11 +447,6 @@ export const initialDuckValues = {
   ...initialQueryBaseValues,
 };
 
-export const initialBaiduValues = {
-  top_n: 10,
-  ...initialQueryBaseValues,
-};
-
 export const initialWikipediaValues = {
   top_n: 10,
   language: 'en',
@@ -518,13 +497,6 @@ export const initialDeepLValues = {
 
 export const initialGithubValues = {
   top_n: 5,
-  ...initialQueryBaseValues,
-};
-
-export const initialBaiduFanyiValues = {
-  appid: 'xxx',
-  secret_key: 'xxx',
-  trans_type: 'translate',
   ...initialQueryBaseValues,
 };
 
@@ -686,7 +658,6 @@ export const RestrictedUpstreamMap = {
     Operator.Message,
     Operator.Relevant,
   ],
-  [Operator.Baidu]: [Operator.Begin, Operator.Retrieval],
   [Operator.DuckDuckGo]: [Operator.Begin, Operator.Retrieval],
   [Operator.Wikipedia]: [Operator.Begin, Operator.Retrieval],
   [Operator.PubMed]: [Operator.Begin, Operator.Retrieval],
@@ -696,7 +667,6 @@ export const RestrictedUpstreamMap = {
   [Operator.GoogleScholar]: [Operator.Begin, Operator.Retrieval],
   [Operator.DeepL]: [Operator.Begin, Operator.Retrieval],
   [Operator.GitHub]: [Operator.Begin, Operator.Retrieval],
-  [Operator.BaiduFanyi]: [Operator.Begin, Operator.Retrieval],
   [Operator.QWeather]: [Operator.Begin, Operator.Retrieval],
   [Operator.ExeSQL]: [Operator.Begin],
   [Operator.Switch]: [Operator.Begin],
@@ -726,7 +696,6 @@ export const NodeMap = {
   [Operator.RewriteQuestion]: 'rewriteNode',
   [Operator.KeywordExtract]: 'keywordNode',
   [Operator.DuckDuckGo]: 'ragNode',
-  [Operator.Baidu]: 'ragNode',
   [Operator.Wikipedia]: 'ragNode',
   [Operator.PubMed]: 'ragNode',
   [Operator.ArXiv]: 'ragNode',
@@ -735,7 +704,6 @@ export const NodeMap = {
   [Operator.GoogleScholar]: 'ragNode',
   [Operator.DeepL]: 'ragNode',
   [Operator.GitHub]: 'ragNode',
-  [Operator.BaiduFanyi]: 'ragNode',
   [Operator.QWeather]: 'ragNode',
   [Operator.ExeSQL]: 'ragNode',
   [Operator.Switch]: 'switchNode',
@@ -2788,52 +2756,6 @@ export const DeepLTargetLangOptions = [
   { label: 'Turkish', value: 'TR' },
   { label: 'Ukrainian', value: 'UK' },
   { label: 'Chinese (simplified)', value: 'ZH' },
-];
-
-export const BaiduFanyiDomainOptions = [
-  'it',
-  'finance',
-  'machinery',
-  'senimed',
-  'novel',
-  'academic',
-  'aerospace',
-  'wiki',
-  'news',
-  'law',
-  'contract',
-];
-
-export const BaiduFanyiSourceLangOptions = [
-  'auto',
-  'zh',
-  'en',
-  'yue',
-  'wyw',
-  'jp',
-  'kor',
-  'fra',
-  'spa',
-  'th',
-  'ara',
-  'ru',
-  'pt',
-  'de',
-  'it',
-  'el',
-  'nl',
-  'pl',
-  'bul',
-  'est',
-  'dan',
-  'fin',
-  'cs',
-  'rom',
-  'slo',
-  'swe',
-  'hu',
-  'cht',
-  'vie',
 ];
 
 export const QWeatherLangOptions = [
