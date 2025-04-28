@@ -1,0 +1,213 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# RAGFlow部署指南
+
+本文檔提供RAGFlow的詳細部署指南，包括安裝步驟、配置選項和常見問題解決方案。
+
+## 系統要求
+
+在部署RAGFlow前，請確保您的系統滿足以下要求：
+
+- CPU >= 4核
+- RAM >= 16 GB
+- 硬盤 >= 50 GB
+- Docker >= 24.0.0 & Docker Compose >= v2.26.1
+
+## 安裝步驟
+
+### 1. 系統設置
+
+確保`vm.max_map_count`設置為至少262144：
+
+```bash
+# 檢查當前值
+$ sysctl vm.max_map_count
+
+# 如果值小於262144，請設置為262144
+$ sudo sysctl -w vm.max_map_count=262144
+
+# 要永久設置此值，請編輯/etc/sysctl.conf文件並添加
+vm.max_map_count=262144
+```
+
+### 2. 獲取代碼
+
+```bash
+$ git clone https://github.com/infiniflow/ragflow.git
+$ cd ragflow
+```
+
+### 3. 啟動服務
+
+RAGFlow提供了不同的鏡像版本，可根據需要選擇：
+
+| RAGFlow鏡像標籤 | 鏡像大小 (GB) | 包含嵌入模型？ | 穩定性                 |
+|--------------|------------|--------------|-----------------------|
+| v0.17.2      | 約9         | ✓            | 穩定發布                |
+| v0.17.2-slim | 約2         | ✗            | 穩定發布                |
+| nightly      | 約9         | ✓            | 不穩定的每日構建版本       |
+| nightly-slim | 約2         | ✗            | 不穩定的每日構建版本       |
+
+```bash
+$ cd docker
+
+# 使用CPU運行嵌入和DeepDoc任務
+$ docker compose -f docker-compose.yml up -d
+
+# 或使用GPU加速嵌入和DeepDoc任務
+# $ docker compose -f docker-compose-gpu.yml up -d
+```
+
+### 4. 驗證服務啟動
+
+```bash
+$ docker logs -f ragflow-server
+```
+
+當看到以下輸出時，表示系統成功啟動：
+
+```
+     ____   ___    ______ ______ __
+    / __ \ /   |  / ____// ____// /____  _      __
+   / /_/ // /| | / / __ / /_   / // __ \| | /| / /
+  / _, _// ___ |/ /_/ // __/  / // /_/ /| |/ |/ /
+ /_/ |_|/_/  |_|\____//_/    /_/ \____/ |__/|__/
+
+* Running on all addresses (0.0.0.0)
+```
+
+### 5. 訪問系統
+
+在瀏覽器中輸入您服務器的IP地址即可訪問RAGFlow。
+
+### 6. 配置LLM
+
+編輯[service_conf.yaml.template](mdc:docker/service_conf.yaml.template)文件，選擇所需的LLM工廠並更新相應的API密鑰。
+
+## 配置選項
+
+### 基本配置文件
+
+RAGFlow的配置主要通過以下文件管理：
+
+- [.env](mdc:docker/.env)：系統的基本設置，如HTTP端口、MySQL密碼和MinIO密碼
+- [service_conf.yaml.template](mdc:docker/service_conf.yaml.template)：後端服務配置
+- [docker-compose.yml](mdc:docker/docker-compose.yml)：系統啟動配置
+
+### 修改HTTP端口
+
+要更改默認的HTTP端口(80)，請編輯[docker-compose.yml](mdc:docker/docker-compose.yml)文件，將`80:80`更改為`<您的端口>:80`。
+
+### 修改LLM設置
+
+在[service_conf.yaml.template](mdc:docker/service_conf.yaml.template)文件中配置LLM設置，包括：
+
+```yaml
+user_default_llm:
+  factory: openai  # 可替換為anthropic、google等
+  api_key: ${OPENAI_API_KEY}
+  model: gpt-4-turbo
+```
+
+### 切換文檔引擎
+
+RAGFlow默認使用Elasticsearch存儲全文和向量。要切換到Infinity：
+
+1. 停止所有正在運行的容器：
+   ```bash
+   $ docker compose -f docker/docker-compose.yml down -v
+   ```
+   
+   > 警告：`-v`將刪除Docker容器卷，現有數據將被清除。
+   
+2. 在**docker/.env**中將`DOC_ENGINE`設置為`infinity`。
+
+3. 啟動容器：
+   ```bash
+   $ docker compose -f docker-compose.yml up -d
+   ```
+
+## 構建Docker鏡像
+
+### 不包含嵌入模型的鏡像
+
+```bash
+$ cd docker
+$ docker build -t infiniflow/ragflow:custom \
+  --build-arg VERSION=custom \
+  --build-arg LIGHTEN=true \
+  --build-arg NEED_MIRROR=false \
+  -f ../Dockerfile ..
+```
+
+### 包含嵌入模型的鏡像
+
+```bash
+$ cd docker
+$ docker build -t infiniflow/ragflow:custom \
+  --build-arg VERSION=custom \
+  --build-arg LIGHTEN=false \
+  --build-arg NEED_MIRROR=false \
+  -f ../Dockerfile ..
+```
+
+## 常見問題
+
+### 1. 服務啟動失敗
+
+問題：使用`docker-compose.yml`啟動服務失敗。
+
+解決方案：
+- 確保Docker和Docker Compose已正確安裝
+- 檢查系統是否滿足最低硬件要求
+- 檢查`vm.max_map_count`設置是否正確
+- 查看Docker日誌以獲取更多信息：`docker logs -f ragflow-server`
+
+### 2. GPU支持問題
+
+問題：使用GPU版本時，服務仍在CPU上運行。
+
+解決方案：
+- 確保已安裝NVIDIA驅動和CUDA
+- 確保已安裝nvidia-docker2
+- 檢查GPU是否被Docker識別：`docker run --gpus all nvidia/cuda:11.0-base nvidia-smi`
+
+### 3. 無法連接到服務
+
+問題：在瀏覽器中無法訪問RAGFlow。
+
+解決方案：
+- 確保防火牆允許HTTP端口(默認80)流量
+- 使用`docker ps`檢查容器是否正在運行
+- 確保服務器的IP地址可訪問
+
+### 4. 模型API鍵問題
+
+問題：設置LLM API密鑰後仍然出現錯誤。
+
+解決方案：
+- 確保API密鑰格式正確
+- 在service_conf.yaml.template中檢查API密鑰設置
+- 重啟服務以應用更改：`docker compose -f docker-compose.yml up -d`
+
+## 從源代碼運行（開發用途）
+
+對於開發目的，可以從源代碼啟動服務：
+
+```bash
+# 啟動數據庫服務
+$ cd docker
+$ docker compose -f docker-compose-dev.yml up -d
+
+# 啟動後端服務
+$ cd ..
+$ python -m api.apps.ragflow
+
+# 啟動前端服務
+$ cd web
+$ npm install
+$ npm run dev
+```
