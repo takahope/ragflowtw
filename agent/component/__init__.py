@@ -26,7 +26,6 @@ from .message import Message, MessageParam
 from .rewrite import RewriteQuestion, RewriteQuestionParam
 from .keyword import KeywordExtract, KeywordExtractParam
 from .concentrator import Concentrator, ConcentratorParam
-from .baidu import Baidu, BaiduParam
 from .duckduckgo import DuckDuckGo, DuckDuckGoParam
 from .wikipedia import Wikipedia, WikipediaParam
 from .pubmed import PubMed, PubMedParam
@@ -36,7 +35,6 @@ from .bing import Bing, BingParam
 from .googlescholar import GoogleScholar, GoogleScholarParam
 from .deepl import DeepL, DeepLParam
 from .github import GitHub, GitHubParam
-from .baidufanyi import BaiduFanyi, BaiduFanyiParam
 from .qweather import QWeather, QWeatherParam
 from .exesql import ExeSQL, ExeSQLParam
 from .yahoofinance import YahooFinance, YahooFinanceParam
@@ -81,8 +79,6 @@ __all__ = [
     "KeywordExtractParam",
     "Concentrator",
     "ConcentratorParam",
-    "Baidu",
-    "BaiduParam",
     "DuckDuckGo",
     "DuckDuckGoParam",
     "Wikipedia",
@@ -101,8 +97,6 @@ __all__ = [
     "DeepLParam",
     "GitHub",
     "GitHubParam",
-    "BaiduFanyi",
-    "BaiduFanyiParam",
     "QWeather",
     "QWeatherParam",
     "ExeSQL",

@@ -9,8 +9,6 @@ import { BeginId, Operator, operatorMap } from '../constant';
 import AkShareForm from '../form/akshare-form';
 import AnswerForm from '../form/answer-form';
 import ArXivForm from '../form/arxiv-form';
-import BaiduFanyiForm from '../form/baidu-fanyi-form';
-import BaiduForm from '../form/baidu-form';
 import BeginForm from '../form/begin-form';
 import BingForm from '../form/bing-form';
 import CategorizeForm from '../form/categorize-form';
@@ -69,7 +67,6 @@ const FormMap = {
   [Operator.Message]: MessageForm,
   [Operator.Relevant]: RelevantForm,
   [Operator.RewriteQuestion]: RewriteQuestionForm,
-  [Operator.Baidu]: BaiduForm,
   [Operator.DuckDuckGo]: DuckDuckGoForm,
   [Operator.KeywordExtract]: KeywordExtractForm,
   [Operator.Wikipedia]: WikipediaForm,
@@ -80,7 +77,6 @@ const FormMap = {
   [Operator.GoogleScholar]: GoogleScholarForm,
   [Operator.DeepL]: DeepLForm,
   [Operator.GitHub]: GithubForm,
-  [Operator.BaiduFanyi]: BaiduFanyiForm,
   [Operator.QWeather]: QWeatherForm,
   [Operator.ExeSQL]: ExeSQLForm,
   [Operator.Switch]: SwitchForm,
