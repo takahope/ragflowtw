@@ -1,11 +1,11 @@
+import { MoreButton } from '@/components/more-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useNavigatePage } from '@/hooks/logic-hooks/navigate-hooks';
 import { IKnowledge } from '@/interfaces/database/knowledge';
 import { formatDate } from '@/utils/date';
-import { ChevronRight, Ellipsis } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { DatasetDropdown } from './dataset-dropdown';
 import { useDisplayOwnerName } from './use-display-owner';
 import { useRenameDataset } from './use-rename-dataset';
@@ -26,10 +26,10 @@ export function DatasetCard({
   return (
     <Card
       key={dataset.id}
-      className="bg-colors-background-inverse-weak  w-40"
+      className="w-40"
       onClick={navigateToDataset(dataset.id)}
     >
-      <CardContent className="p-2.5 pt-1 group">
+      <CardContent className="p-2.5 pt-2 group">
         <section className="flex justify-between mb-2">
           <div className="flex gap-2 items-center">
             <Avatar className="size-6 rounded-lg">
@@ -46,13 +46,7 @@ export function DatasetCard({
             showDatasetRenameModal={showDatasetRenameModal}
             dataset={dataset}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="invisible group-hover:visible"
-            >
-              <Ellipsis />
-            </Button>
+            <MoreButton></MoreButton>
           </DatasetDropdown>
         </section>
         <div className="flex justify-between items-end">
@@ -81,7 +75,7 @@ export function SeeAllCard() {
       className="bg-colors-background-inverse-weak w-40"
       onClick={navigateToDatasetList}
     >
-      <CardContent className="p-2.5 pt-1 w-full h-full flex items-center justify-center gap-1.5">
+      <CardContent className="p-2.5 pt-1 w-full h-full flex items-center justify-center gap-1.5 text-text-sub-title">
         See All <ChevronRight className="size-4" />
       </CardContent>
     </Card>
