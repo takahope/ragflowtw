@@ -394,3 +394,4 @@ See the [RAGFlow Roadmap 2025](https://github.com/infiniflow/ragflow/issues/4214
 
 RAGFlow flourishes via open-source collaboration. In this spirit, we embrace diverse contributions from the community.
 If you would like to be a part, review our [Contribution Guidelines](https://ragflow.io/docs/dev/contributing) first.
+ docker build --platform linux/amd64 --build-arg LIGHTEN=1 -f Dockerfile -t biobankauditor/ragflowtw:slim-v1 .
